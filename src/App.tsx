@@ -1,25 +1,29 @@
-import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
-import Paper from "@mui/material/Paper";
-import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { ProtectedRoute } from "./ProtectedRoute";
+import { AuthProvider } from "./context/AuthContext";
+import { DashboardPage } from "./pages/DashboardPage";
+import { LoginPage } from "./pages/LoginPage";
 
 const theme = createTheme();
+const routerBasename = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box maxWidth={720} mx="auto" mt={8} px={2}>
-        <Paper sx={{ p: 4, textAlign: "center" }}>
-          <Typography variant="h3" component="h1" gutterBottom>
-            TaskFlow
-          </Typography>
-          <Typography color="text.secondary">
-            A focused workspace for projects and tasks.
-          </Typography>
-        </Paper>
-      </Box>
+      <AuthProvider>
+        <BrowserRouter basename={routerBasename}>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<DashboardPage />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

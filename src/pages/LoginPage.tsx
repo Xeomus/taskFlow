@@ -1,0 +1,79 @@
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+import { API_URL } from "../types";
+
+export function LoginPage() {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    const result = await login(username, password);
+    setLoading(false);
+
+    if (result.success) {
+      navigate("/dashboard");
+    } else {
+      setError(result.error ?? "Cannot login. Please try again.");
+    }
+  }
+
+  return (
+    <Box maxWidth={480} mx="auto" mt={8}>
+      <Typography variant="h4" gutterBottom>
+        Welcome to the Task Management App
+      </Typography>
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{ mb: 3 }}
+      ></Typography>
+
+      <Paper sx={{ p: 3 }}>
+        <form onSubmit={handleSubmit}>
+          <Stack spacing={2}>
+            {error && <Alert severity="error">{error}</Alert>}
+
+            <Alert severity="info" variant="outlined">
+              API: <strong>{API_URL}</strong>
+            </Alert>
+
+            <TextField
+              label="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              fullWidth
+              autoComplete="username"
+            />
+            <TextField
+              label="Password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              fullWidth
+              autoComplete="current-password"
+            />
+            <Button type="submit" variant="contained" disabled={loading}>
+              {loading ? "Logging in..." : "Login"}
+            </Button>
+          </Stack>
+        </form>
+      </Paper>
+    </Box>
+  );
+}
