@@ -26,7 +26,13 @@ Install dependencies:
 npm install
 ```
 
-Create a local `.env` file when the API is not served from `/api`:
+Copy `.env.example` to `.env` for local configuration:
+
+```bash
+cp .env.example .env
+```
+
+Set the API URL when it is not served from `/api`:
 
 ```env
 VITE_API_URL=https://your-api.example.com
