@@ -11,7 +11,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useProjects } from "../hooks/useProjects";
 
 export function DashboardPage() {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const { projects, loading, error, refetch } = useProjects();
 
@@ -33,10 +33,10 @@ export function DashboardPage() {
             Dashboard
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Welcome, {localStorage.getItem("username") || "User"}!
+            Welcome, {user?.username || "User"}!
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Role: {localStorage.getItem("role") || "Unknown"}
+            Role: {user?.role || "Unknown"}
           </Typography>
         </Box>
 

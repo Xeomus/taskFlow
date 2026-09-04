@@ -15,6 +15,19 @@ httpClient.interceptors.request.use((config) => {
   return config;
 });
 
+export function installUnauthorizedInterceptor(onUnauthorized: () => void) {
+  const interceptor = httpClient.interceptors.response.use(
+    (response) => response,
+    (err: unknown) => {
+      if (axios.isAxiosError(err) && err.response?.status === 401) {
+        onUnauthorized();
+      }
+      return Promise.reject(err);
+    },
+  );
+  return () => httpClient.interceptors.response.eject(interceptor);
+}
+
 export function getApiErrorMessage(err: unknown): string {
   if (axios.isAxiosError(err)) {
     if (err.response?.status === 401) {
